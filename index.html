@@ -14,7 +14,7 @@ fetch("https://script.google.com/macros/s/AKfycbx6QI8qDh_xuywMssTcZClh4q6fAkSgxm
   function makeCard(m) {
     return `
       <div class="card">
-        <img src="${m["Headshot"][0]}" class="photo">
+        <img src="${m.photo}" class="photo">
         <h3>${m["Full Name"]}</h3>
         <p class="role">${m["Role"]}</p>
         <p><strong>Research:</strong> ${m["Research Interests"]}</p>
