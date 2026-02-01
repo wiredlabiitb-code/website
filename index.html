@@ -1,20 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lab Members</title>
+
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .grid { display:flex; flex-wrap:wrap; gap:20px; }
+    .card {
+      width:250px;
+      padding:15px;
+      border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      background:white;
+    }
+    .photo {
+      width:100%;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      border-radius:50%;
+    }
+    .role { font-weight:bold; color:#444; }
+
+    /* Skeleton loading */
+    .skeleton .ph {
+      width:100%;
+      aspect-ratio:1/1;
+      border-radius:50%;
+      background:#eee;
+    }
+    .skeleton .line {
+      height:12px;
+      background:#eee;
+      margin:10px 0;
+      border-radius:6px;
+    }
+    .w60{width:60%} .w40{width:40%}
+  </style>
+</head>
+
+<body>
+
 <h2>Active Members</h2>
-<div id="active"></div>
+<div id="active" class="grid">
+  <!-- Placeholder while loading -->
+  <div class="card skeleton">
+    <div class="ph"></div>
+    <div class="line w60"></div>
+    <div class="line w40"></div>
+  </div>
+</div>
 
 <div id="alumni-section" style="display:none;">
   <h2>Alumni</h2>
-  <div id="alumni"></div>
+  <div id="alumni" class="grid"></div>
 </div>
 
 <script>
-fetch("https://script.google.com/macros/s/AKfycbx6QI8qDh_xuywMssTcZClh4q6fAkSgxmvCs8lnPVOvr7AujMP0qVZTGS7CS7eU-Ofo/exec")
+fetch("PASTE_YOUR_WEB_APP_URL_HERE")
 .then(res => res.json())
 .then(data => {
 
   function makeCard(m) {
     return `
       <div class="card">
-        <img src="${m.photo}" class="photo">
+        <img src="${m.photo}" class="photo" loading="lazy">
         <h3>${m["Full Name"]}</h3>
         <p class="role">${m["Role"]}</p>
         <p><strong>Research:</strong> ${m["Research Interests"]}</p>
@@ -24,11 +73,9 @@ fetch("https://script.google.com/macros/s/AKfycbx6QI8qDh_xuywMssTcZClh4q6fAkSgxm
     `;
   }
 
-  // Always show active members
   document.getElementById("active").innerHTML =
     data.active.map(makeCard).join("");
 
-  // Show alumni ONLY if there are any
   if (data.alumni && data.alumni.length > 0) {
     document.getElementById("alumni-section").style.display = "block";
     document.getElementById("alumni").innerHTML =
@@ -36,3 +83,6 @@ fetch("https://script.google.com/macros/s/AKfycbx6QI8qDh_xuywMssTcZClh4q6fAkSgxm
   }
 });
 </script>
+
+</body>
+</html>
