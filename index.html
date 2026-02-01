@@ -22,39 +22,30 @@
       border-radius:50%;
     }
     .role { font-weight:bold; color:#444; margin-bottom:6px; }
-
-    /* Skeleton loading */
-    .skeleton .ph {
-      width:100%;
-      aspect-ratio:1/1;
-      border-radius:50%;
-      background:#eee;
-    }
-    .skeleton .line {
-      height:12px;
-      background:#eee;
-      margin:10px 0;
-      border-radius:6px;
-    }
-    .w60{width:60%} .w40{width:40%}
   </style>
 </head>
 
 <body>
 
-<h2>Active Members</h2>
-<div id="active" class="grid">
-  <div class="card skeleton">
-    <div class="ph"></div>
-    <div class="line w60"></div>
-    <div class="line w40"></div>
-  </div>
-</div>
+<section id="staff-section">
+  <h2>Staff</h2>
+  <div id="staff" class="grid"></div>
+</section>
 
-<div id="alumni-section" style="display:none;">
+<section id="grad-section">
+  <h2>Graduate Students</h2>
+  <div id="grad" class="grid"></div>
+</section>
+
+<section id="undergrad-section">
+  <h2>Undergraduate Students</h2>
+  <div id="undergrad" class="grid"></div>
+</section>
+
+<section id="alumni-section">
   <h2>Alumni</h2>
   <div id="alumni" class="grid"></div>
-</div>
+</section>
 
 <script>
 (async function () {
@@ -63,11 +54,6 @@
     if (!res.ok) throw new Error("JSON not found");
 
     const data = await res.json();
-    if (!data.active) throw new Error("Invalid JSON");
-
-    const activeDiv = document.getElementById("active");
-    const alumniDiv = document.getElementById("alumni");
-    const alumniSection = document.getElementById("alumni-section");
 
     function makeCard(m) {
       const card = document.createElement("div");
@@ -114,30 +100,31 @@
       return card;
     }
 
-    // Active
-    activeDiv.innerHTML = "";
-    const frag = document.createDocumentFragment();
-    (data.active || []).forEach(m => frag.appendChild(makeCard(m)));
-    activeDiv.appendChild(frag);
+    function renderSection(list, gridId, sectionId) {
+      const grid = document.getElementById(gridId);
+      const section = document.getElementById(sectionId);
 
-    // Alumni
-    if (data.alumni && data.alumni.length > 0) {
-      alumniSection.style.display = "block";
-      alumniDiv.innerHTML = "";
-      const frag2 = document.createDocumentFragment();
-      data.alumni.forEach(m => frag2.appendChild(makeCard(m)));
-      alumniDiv.appendChild(frag2);
+      if (!list || list.length === 0) {
+        section.style.display = "none";   // 🔥 Hides heading + grid together
+        return;
+      }
+
+      const frag = document.createDocumentFragment();
+      list.forEach(m => frag.appendChild(makeCard(m)));
+      grid.appendChild(frag);
     }
 
-    document.querySelectorAll(".skeleton").forEach(e => e.remove());
+    renderSection(data.staff, "staff", "staff-section");
+    renderSection(data.graduate_students, "grad", "grad-section");
+    renderSection(data.undergraduate_students, "undergrad", "undergrad-section");
+    renderSection(data.alumni, "alumni", "alumni-section");
 
   } catch (err) {
     console.error("Load error:", err);
-    document.getElementById("active").innerHTML =
-      "<p style='color:red'>Error loading members.</p>";
+    document.body.innerHTML += "<p style='color:red'>Error loading members.</p>";
   }
 })();
 </script>
-  
+
 </body>
 </html>
