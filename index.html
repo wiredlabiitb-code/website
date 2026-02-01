@@ -44,7 +44,6 @@
 
 <h2>Active Members</h2>
 <div id="active" class="grid">
-  <!-- Placeholder while loading -->
   <div class="card skeleton">
     <div class="ph"></div>
     <div class="line w60"></div>
@@ -58,36 +57,44 @@
 </div>
 
 <script>
-fetch("https://wiredlabiitb-code.github.io/website/members.json")
-.then(res => res.json())
-.then(data => {
+(async function () {
+  try {
+    const res = await fetch("./members.json");
+    if (!res.ok) throw new Error("JSON not found");
+    const data = await res.json();
 
-  function makeCard(m) {
-    return `
-      <div class="card">
-        <img src="${m.photo}" class="photo" loading="lazy">
-        <h3>${m["Full Name"]}</h3>
-        <p class="role">${m["Role"]}</p>
-        <p><strong>Research:</strong> ${m["Research Interests"]}</p>
-        <p><strong>Hobbies:</strong> ${m["Hobbies"]}</p>
-        ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ``}
-      </div>
-    `;
+    const activeDiv = document.getElementById("active");
+    const alumniDiv = document.getElementById("alumni");
+    const alumniSection = document.getElementById("alumni-section");
+
+    function safe(v) { return v || ""; }
+
+    function makeCard(m) {
+      return `
+        <div class="card">
+          <img src="${safe(m.photo)}" class="photo" loading="lazy">
+          <h3>${safe(m["Full Name"])}</h3>
+          <p class="role">${safe(m["Role"])}</p>
+          <p><strong>Research:</strong> ${safe(m["Research Interests"])}</p>
+          <p><strong>Hobbies:</strong> ${safe(m["Hobbies"])}</p>
+          ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ""}
+        </div>
+      `;
+    }
+
+    activeDiv.innerHTML = (data.active || []).map(makeCard).join("");
+
+    if (data.alumni && data.alumni.length > 0) {
+      alumniSection.style.display = "block";
+      alumniDiv.innerHTML = data.alumni.map(makeCard).join("");
+    }
+
+  } catch (err) {
+    console.error("Load error:", err);
+    document.getElementById("active").innerHTML =
+      "<p style='color:red'>Error loading members.</p>";
   }
-
-  document.getElementById("active").innerHTML =
-    data.active.map(makeCard).join("");
-
-  if (data.alumni && data.alumni.length > 0) {
-    document.getElementById("alumni-section").style.display = "block";
-    document.getElementById("alumni").innerHTML =
-      data.alumni.map(makeCard).join("");
-  }
-})
-.catch(err => {
-  document.getElementById("active").innerHTML = "<p>Error loading members.</p>";
-  console.error(err);
-});
+})();
 </script>
 
 </body>
