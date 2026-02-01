@@ -1,31 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Lab Members</title>
-  <style>
-    body { font-family: Arial; text-align:center; margin-top:80px }
-    a {
-      display:block;
-      width:280px;
-      margin:20px auto;
-      padding:15px;
-      text-decoration:none;
-      background:#1f4ed8;
-      color:white;
-      border-radius:8px;
-      font-size:18px;
-    }
-    a:hover { background:#163bb3 }
-  </style>
-</head>
-<body>
+<script>
+async function loadSection(url, title) {
+  const res = await fetch(url);
+  if (!res.ok) return;
 
-<h1>Lab Members</h1>
+  const members = await res.json();
+  if (!members.length) return;
 
-<a href="staff.html">Staff</a>
-<a href="graduate.html">Graduate Students</a>
-<a href="undergraduate.html">Undergraduate Students</a>
-<a href="alumni.html">Alumni</a>
+  const section = document.createElement("section");
+  const h2 = document.createElement("h2");
+  h2.textContent = title;
+  section.appendChild(h2);
 
-</body>
-</html>
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  const frag = document.createDocumentFragment();
+
+  members.forEach(m => frag.appendChild(makeCard(m)));
+
+  grid.appendChild(frag);
+  section.appendChild(grid);
+  document.body.appendChild(section);
+}
+
+function makeCard(m) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  card.innerHTML = `
+    <img class="photo" src="${m.photo || 'default-profile.png'}">
+    <h3>${m["Full Name"] || ""}</h3>
+    <p class="role">${m["Role"] || ""}</p>
+    ${m["Research Interests"] ? `<p><strong>Research:</strong> ${m["Research Interests"]}</p>` : ""}
+    ${m["Hobbies"] ? `<p><strong>Hobbies:</strong> ${m["Hobbies"]}</p>` : ""}
+    ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ""}
+  `;
+
+  return card;
+}
+
+(async function(){
+  await loadSection("data/staff.json", "Staff");
+  await loadSection("data/graduate.json", "Graduate Students");
+  await loadSection("data/undergrad.json", "Undergraduate Students");
+  await loadSection("data/alumni.json", "Alumni");
+})();
+</script>
