@@ -4,7 +4,7 @@
   <title>Lab Members</title>
 
   <style>
-    body { font-family: Arial, sans-serif; }
+    body { font-family: Arial, sans-serif; margin: 40px; }
     .grid { display:flex; flex-wrap:wrap; gap:20px; }
     .card {
       width:250px;
@@ -12,14 +12,16 @@
       border-radius:10px;
       box-shadow:0 2px 8px rgba(0,0,0,0.1);
       background:white;
+      transition: transform 0.2s ease;
     }
+    .card:hover { transform: translateY(-4px); }
     .photo {
       width:100%;
       aspect-ratio:1/1;
       object-fit:cover;
       border-radius:50%;
     }
-    .role { font-weight:bold; color:#444; }
+    .role { font-weight:bold; color:#444; margin-bottom:6px; }
 
     /* Skeleton loading */
     .skeleton .ph {
@@ -56,7 +58,7 @@
 </div>
 
 <script>
-fetch("PASTE_YOUR_WEB_APP_URL_HERE")
+fetch("https://wiredlabiitb-code.github.io/website/members.json")
 .then(res => res.json())
 .then(data => {
 
@@ -81,6 +83,10 @@ fetch("PASTE_YOUR_WEB_APP_URL_HERE")
     document.getElementById("alumni").innerHTML =
       data.alumni.map(makeCard).join("");
   }
+})
+.catch(err => {
+  document.getElementById("active").innerHTML = "<p>Error loading members.</p>";
+  console.error(err);
 });
 </script>
 
