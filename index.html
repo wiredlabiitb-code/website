@@ -2,129 +2,30 @@
 <html>
 <head>
   <title>Lab Members</title>
-
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    .grid { display:flex; flex-wrap:wrap; gap:20px; }
-    .card {
-      width:250px;
+    body { font-family: Arial; text-align:center; margin-top:80px }
+    a {
+      display:block;
+      width:280px;
+      margin:20px auto;
       padding:15px;
-      border-radius:10px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.1);
-      background:white;
-      transition: transform 0.2s ease;
+      text-decoration:none;
+      background:#1f4ed8;
+      color:white;
+      border-radius:8px;
+      font-size:18px;
     }
-    .card:hover { transform: translateY(-4px); }
-    .photo {
-      width:100%;
-      aspect-ratio:1/1;
-      object-fit:cover;
-      border-radius:50%;
-    }
-    .role { font-weight:bold; color:#444; margin-bottom:6px; }
+    a:hover { background:#163bb3 }
   </style>
 </head>
-
 <body>
 
-<section id="staff-section">
-  <h2>Staff</h2>
-  <div id="staff" class="grid"></div>
-</section>
+<h1>Lab Members</h1>
 
-<section id="grad-section">
-  <h2>Graduate Students</h2>
-  <div id="grad" class="grid"></div>
-</section>
-
-<section id="undergrad-section">
-  <h2>Undergraduate Students</h2>
-  <div id="undergrad" class="grid"></div>
-</section>
-
-<section id="alumni-section">
-  <h2>Alumni</h2>
-  <div id="alumni" class="grid"></div>
-</section>
-
-<script>
-(async function () {
-  try {
-    const res = await fetch("https://raw.githubusercontent.com/wiredlabiitb-code/website/main/members.json");
-    if (!res.ok) throw new Error("JSON not found");
-
-    const data = await res.json();
-
-    function makeCard(m) {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const img = document.createElement("img");
-      img.className = "photo";
-      img.loading = "lazy";
-      img.decoding = "async";
-      img.src = m.photo || "default-profile.png";
-      card.appendChild(img);
-
-      const name = document.createElement("h3");
-      name.textContent = m["Full Name"] || "";
-      card.appendChild(name);
-
-      if (m["Role"]) {
-        const role = document.createElement("p");
-        role.className = "role";
-        role.textContent = m["Role"];
-        card.appendChild(role);
-      }
-
-      if (m["Research Interests"]) {
-        const p = document.createElement("p");
-        p.innerHTML = "<strong>Research:</strong> " + m["Research Interests"];
-        card.appendChild(p);
-      }
-
-      if (m["Hobbies"]) {
-        const p = document.createElement("p");
-        p.innerHTML = "<strong>Hobbies:</strong> " + m["Hobbies"];
-        card.appendChild(p);
-      }
-
-      if (m["Personal Website"] && m["Personal Website"].startsWith("http")) {
-        const a = document.createElement("a");
-        a.href = m["Personal Website"];
-        a.target = "_blank";
-        a.textContent = "Website";
-        card.appendChild(a);
-      }
-
-      return card;
-    }
-
-    function renderSection(list, gridId, sectionId) {
-      const grid = document.getElementById(gridId);
-      const section = document.getElementById(sectionId);
-
-      if (!list || list.length === 0) {
-        section.style.display = "none";   // 🔥 Hides heading + grid together
-        return;
-      }
-
-      const frag = document.createDocumentFragment();
-      list.forEach(m => frag.appendChild(makeCard(m)));
-      grid.appendChild(frag);
-    }
-
-    renderSection(data.staff, "staff", "staff-section");
-    renderSection(data.graduate_students, "grad", "grad-section");
-    renderSection(data.undergraduate_students, "undergrad", "undergrad-section");
-    renderSection(data.alumni, "alumni", "alumni-section");
-
-  } catch (err) {
-    console.error("Load error:", err);
-    document.body.innerHTML += "<p style='color:red'>Error loading members.</p>";
-  }
-})();
-</script>
+<a href="staff.html">Staff</a>
+<a href="graduate.html">Graduate Students</a>
+<a href="undergraduate.html">Undergraduate Students</a>
+<a href="alumni.html">Alumni</a>
 
 </body>
 </html>
