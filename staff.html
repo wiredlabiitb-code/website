@@ -2,13 +2,18 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Lab Members</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab Staff</title>
 
 <style>
   body {
     font-family: Arial, sans-serif;
-    margin: 40px;
+    margin: 0;
+    padding: 20px;
     background: #fafafa;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   section {
@@ -22,14 +27,14 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     margin-top: 20px;
   }
 
   .card {
     background: white;
-    padding: 18px;
+    padding: 16px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     text-align: center;
@@ -41,10 +46,9 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
   }
 
-  /* 🔵 Circular Profile Image */
   .photo {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     object-position: center;
