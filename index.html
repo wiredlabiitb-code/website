@@ -1,3 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Lab Members</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #fafafa;
+  }
+
+  section {
+    margin-bottom: 60px;
+  }
+
+  h2 {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 6px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .card {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+
+  /* 🔵 Circular Profile Image */
+  .photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    margin: 0 auto 12px auto;
+    border: 2px solid #eee;
+  }
+
+  .role {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 6px;
+    color: #0066cc;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+
+<body>
+
 <script>
 async function loadSection(url, title) {
   const res = await fetch(url);
@@ -15,7 +91,6 @@ async function loadSection(url, title) {
   grid.className = "grid";
 
   const frag = document.createDocumentFragment();
-
   members.forEach(m => frag.appendChild(makeCard(m)));
 
   grid.appendChild(frag);
@@ -28,9 +103,14 @@ function makeCard(m) {
   card.className = "card";
 
   card.innerHTML = `
-    <img class="photo" src="${m.photo || 'default-profile.png'}">
+    <img class="photo"
+         src="${m.photo || 'default-profile.png'}"
+         alt="${m["Full Name"] || "Profile photo"}"
+         loading="lazy">
+
     <h3>${m["Full Name"] || ""}</h3>
     <p class="role">${m["Role"] || ""}</p>
+
     ${m["Research Interests"] ? `<p><strong>Research:</strong> ${m["Research Interests"]}</p>` : ""}
     ${m["Hobbies"] ? `<p><strong>Hobbies:</strong> ${m["Hobbies"]}</p>` : ""}
     ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ""}
@@ -46,3 +126,6 @@ function makeCard(m) {
   await loadSection("data/alumni.json", "Alumni");
 })();
 </script>
+
+</body>
+</html>
