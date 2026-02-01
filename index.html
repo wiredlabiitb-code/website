@@ -69,20 +69,54 @@
 
     function safe(v) { return v || ""; }
 
-    function makeCard(m) {
-      return `
-        <div class="card">
-          <img src="${safe(m.photo)}" class="photo" loading="lazy">
-          <h3>${safe(m["Full Name"])}</h3>
-          ${m["Role"] ? `<p class="role">${m["Role"]}</p>` : ""}
-          ${m["Research Interests"] ? `<p><strong>Research:</strong> ${m["Research Interests"]}</p>` : ""}
-          ${m["Hobbies"] ? `<p><strong>Hobbies:</strong> ${m["Hobbies"]}</p>` : ""}
-          ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ""}
-        </div>
-      `;
-    }
+function makeCard(m) {
+  const card = document.createElement("div");
+  card.className = "card";
 
-    activeDiv.innerHTML = (data.active || []).map(makeCard).join("");
+  const img = document.createElement("img");
+  img.className = "photo";
+  img.loading = "lazy";
+  img.src = m.photo || "default-profile.png";
+  card.appendChild(img);
+
+  const name = document.createElement("h3");
+  name.textContent = m["Full Name"] || "";
+  card.appendChild(name);
+
+  if (m["Role"]) {
+    const role = document.createElement("p");
+    role.className = "role";
+    role.textContent = m["Role"];
+    card.appendChild(role);
+  }
+
+  if (m["Research Interests"]) {
+    const p = document.createElement("p");
+    p.innerHTML = "<strong>Research:</strong> " + m["Research Interests"];
+    card.appendChild(p);
+  }
+
+  if (m["Hobbies"]) {
+    const p = document.createElement("p");
+    p.innerHTML = "<strong>Hobbies:</strong> " + m["Hobbies"];
+    card.appendChild(p);
+  }
+
+  if (m["Personal Website"] && m["Personal Website"].startsWith("http")) {
+    const a = document.createElement("a");
+    a.href = m["Personal Website"];
+    a.target = "_blank";
+    a.textContent = "Website";
+    card.appendChild(a);
+  }
+
+  return card;
+}
+
+    activeDiv.innerHTML = "";
+(data.active || []).forEach(m => {
+  activeDiv.appendChild(makeCard(m));
+});
 
     if (data.alumni && data.alumni.length > 0) {
       alumniSection.style.display = "block";
