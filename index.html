@@ -59,73 +59,77 @@
 <script>
 (async function () {
   try {
-const res = await fetch("https://raw.githubusercontent.com/wiredlabiitb-code/website/main/members.json")
-
+    const res = await fetch("https://raw.githubusercontent.com/wiredlabiitb-code/website/main/members.json");
     if (!res.ok) throw new Error("JSON not found");
+
     const data = await res.json();
+    if (!data.active) throw new Error("Invalid JSON");
 
     const activeDiv = document.getElementById("active");
     const alumniDiv = document.getElementById("alumni");
     const alumniSection = document.getElementById("alumni-section");
 
-    function safe(v) { return v || ""; }
+    function makeCard(m) {
+      const card = document.createElement("div");
+      card.className = "card";
 
-function makeCard(m) {
-  const card = document.createElement("div");
-  card.className = "card";
+      const img = document.createElement("img");
+      img.className = "photo";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.src = m.photo || "default-profile.png";
+      card.appendChild(img);
 
-  const img = document.createElement("img");
-  img.className = "photo";
-  img.loading = "lazy";
-  img.src = m.photo || "default-profile.png";
-  card.appendChild(img);
+      const name = document.createElement("h3");
+      name.textContent = m["Full Name"] || "";
+      card.appendChild(name);
 
-  const name = document.createElement("h3");
-  name.textContent = m["Full Name"] || "";
-  card.appendChild(name);
+      if (m["Role"]) {
+        const role = document.createElement("p");
+        role.className = "role";
+        role.textContent = m["Role"];
+        card.appendChild(role);
+      }
 
-  if (m["Role"]) {
-    const role = document.createElement("p");
-    role.className = "role";
-    role.textContent = m["Role"];
-    card.appendChild(role);
-  }
+      if (m["Research Interests"]) {
+        const p = document.createElement("p");
+        p.innerHTML = "<strong>Research:</strong> " + m["Research Interests"];
+        card.appendChild(p);
+      }
 
-  if (m["Research Interests"]) {
-    const p = document.createElement("p");
-    p.innerHTML = "<strong>Research:</strong> " + m["Research Interests"];
-    card.appendChild(p);
-  }
+      if (m["Hobbies"]) {
+        const p = document.createElement("p");
+        p.innerHTML = "<strong>Hobbies:</strong> " + m["Hobbies"];
+        card.appendChild(p);
+      }
 
-  if (m["Hobbies"]) {
-    const p = document.createElement("p");
-    p.innerHTML = "<strong>Hobbies:</strong> " + m["Hobbies"];
-    card.appendChild(p);
-  }
+      if (m["Personal Website"] && m["Personal Website"].startsWith("http")) {
+        const a = document.createElement("a");
+        a.href = m["Personal Website"];
+        a.target = "_blank";
+        a.textContent = "Website";
+        card.appendChild(a);
+      }
 
-  if (m["Personal Website"] && m["Personal Website"].startsWith("http")) {
-    const a = document.createElement("a");
-    a.href = m["Personal Website"];
-    a.target = "_blank";
-    a.textContent = "Website";
-    card.appendChild(a);
-  }
+      return card;
+    }
 
-  return card;
-}
-
+    // Active
     activeDiv.innerHTML = "";
-(data.active || []).forEach(m => {
-  activeDiv.appendChild(makeCard(m));
-});
+    const frag = document.createDocumentFragment();
+    (data.active || []).forEach(m => frag.appendChild(makeCard(m)));
+    activeDiv.appendChild(frag);
 
+    // Alumni
     if (data.alumni && data.alumni.length > 0) {
       alumniSection.style.display = "block";
       alumniDiv.innerHTML = "";
-data.alumni.forEach(m => {
-  alumniDiv.appendChild(makeCard(m));
-});
+      const frag2 = document.createDocumentFragment();
+      data.alumni.forEach(m => frag2.appendChild(makeCard(m)));
+      alumniDiv.appendChild(frag2);
     }
+
+    document.querySelectorAll(".skeleton").forEach(e => e.remove());
 
   } catch (err) {
     console.error("Load error:", err);
@@ -134,6 +138,6 @@ data.alumni.forEach(m => {
   }
 })();
 </script>
-
+  
 </body>
 </html>
