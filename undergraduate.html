@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Undergraduate Students</title>
+  <style>
+    body { font-family: Arial; margin:40px }
+    h2 { margin-bottom:20px }
+    .grid { display:flex; flex-wrap:wrap; gap:20px }
+    .card {
+      width:250px;
+      padding:15px;
+      border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      background:white;
+    }
+    .photo {
+      width:100%;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      border-radius:50%;
+    }
+    .role { font-weight:bold; color:#444 }
+  </style>
+</head>
+<body>
+
+<h2>Undergraduate Students</h2>
+<div id="grid" class="grid"></div>
+
+<script>
+const DATA_URL = "data/undergraduate.json";
+
+fetch(DATA_URL)
+  .then(r => r.json())
+  .then(data => {
+    const grid = document.getElementById("grid");
+    const frag = document.createDocumentFragment();
+
+    data.forEach(m => frag.appendChild(makeCard(m)));
+    grid.appendChild(frag);
+  });
+
+function makeCard(m) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const img = document.createElement("img");
+  img.className = "photo";
+  img.loading = "lazy";
+  img.src = m.photo || "default-profile.png";
+  card.appendChild(img);
+
+  const name = document.createElement("h3");
+  name.textContent = m["Full Name"];
+  card.appendChild(name);
+
+  const role = document.createElement("p");
+  role.className = "role";
+  role.textContent = m["Role"];
+  card.appendChild(role);
+
+  if (m["Research Interests"]) {
+    const p = document.createElement("p");
+    p.innerHTML = "<strong>Research:</strong> " + m["Research Interests"];
+    card.appendChild(p);
+  }
+
+  if (m["Personal Website"]) {
+    const a = document.createElement("a");
+    a.href = m["Personal Website"];
+    a.target = "_blank";
+    a.textContent = "Website";
+    card.appendChild(a);
+  }
+
+  return card;
+}
+</script>
+
+</body>
+</html>
