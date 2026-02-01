@@ -74,9 +74,9 @@
         <div class="card">
           <img src="${safe(m.photo)}" class="photo" loading="lazy">
           <h3>${safe(m["Full Name"])}</h3>
-          <p class="role">${safe(m["Role"])}</p>
-          <p><strong>Research:</strong> ${safe(m["Research Interests"])}</p>
-          <p><strong>Hobbies:</strong> ${safe(m["Hobbies"])}</p>
+          ${m["Role"] ? `<p class="role">${m["Role"]}</p>` : ""}
+          ${m["Research Interests"] ? `<p><strong>Research:</strong> ${m["Research Interests"]}</p>` : ""}
+          ${m["Hobbies"] ? `<p><strong>Hobbies:</strong> ${m["Hobbies"]}</p>` : ""}
           ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ""}
         </div>
       `;
