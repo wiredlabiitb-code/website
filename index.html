@@ -1,0 +1,28 @@
+<h2>Active Members</h2>
+<div id="active"></div>
+
+<h2>Alumni</h2>
+<div id="alumni"></div>
+
+<script>
+fetch("PASTE_SCRIPT_URL_HERE")
+.then(res => res.json())
+.then(data => {
+
+  function makeCard(m) {
+    return `
+      <div class="card">
+        <img src="${m["Headshot"][0]}" class="photo">
+        <h3>${m["Full Name"]}</h3>
+        <p class="role">${m["Role"]}</p>
+        <p><strong>Research:</strong> ${m["Research Interests"]}</p>
+        <p><strong>Hobbies:</strong> ${m["Hobbies"]}</p>
+        ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ``}
+      </div>
+    `;
+  }
+
+  document.getElementById("active").innerHTML = data.active.map(makeCard).join("");
+  document.getElementById("alumni").innerHTML = data.alumni.map(makeCard).join("");
+});
+</script>
