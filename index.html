@@ -1,8 +1,10 @@
 <h2>Active Members</h2>
 <div id="active"></div>
 
-<h2>Alumni</h2>
-<div id="alumni"></div>
+<div id="alumni-section" style="display:none;">
+  <h2>Alumni</h2>
+  <div id="alumni"></div>
+</div>
 
 <script>
 fetch("PASTE_SCRIPT_URL_HERE")
@@ -22,7 +24,15 @@ fetch("PASTE_SCRIPT_URL_HERE")
     `;
   }
 
-  document.getElementById("active").innerHTML = data.active.map(makeCard).join("");
-  document.getElementById("alumni").innerHTML = data.alumni.map(makeCard).join("");
+  // Always show active members
+  document.getElementById("active").innerHTML =
+    data.active.map(makeCard).join("");
+
+  // Show alumni ONLY if there are any
+  if (data.alumni && data.alumni.length > 0) {
+    document.getElementById("alumni-section").style.display = "block";
+    document.getElementById("alumni").innerHTML =
+      data.alumni.map(makeCard).join("");
+  }
 });
 </script>
