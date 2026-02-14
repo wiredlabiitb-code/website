@@ -41,7 +41,7 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
   }
 
-  /* 🔵 Circular Profile Image */
+  /* Circular profile image */
   .photo {
     width: 120px;
     height: 120px;
@@ -56,14 +56,38 @@
   .role {
     color: #666;
     font-size: 14px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+  }
+
+  .tags {
+    margin-top: 6px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: #f3f3f3;
+    border: 1px solid #e0e0e0;
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin: 3px;
+    white-space: nowrap;
+  }
+
+  .label {
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 8px;
+    color: #444;
   }
 
   a {
     display: inline-block;
-    margin-top: 6px;
+    margin-top: 8px;
     color: #0066cc;
     text-decoration: none;
+    font-size: 14px;
   }
 
   a:hover {
@@ -75,45 +99,74 @@
 <body>
 
 <script>
+
 async function loadSection(url, title) {
-  const res = await fetch(url);
-  if (!res.ok) return;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return;
 
-  const members = await res.json();
-  if (!members.length) return;
+    const members = await res.json();
+    if (!members.length) return;
 
-  const section = document.createElement("section");
-  const h2 = document.createElement("h2");
-  h2.textContent = title;
-  section.appendChild(h2);
+    const section = document.createElement("section");
 
-  const grid = document.createElement("div");
-  grid.className = "grid";
+    const h2 = document.createElement("h2");
+    h2.textContent = title;
+    section.appendChild(h2);
 
-  const frag = document.createDocumentFragment();
-  members.forEach(m => frag.appendChild(makeCard(m)));
+    const grid = document.createElement("div");
+    grid.className = "grid";
 
-  grid.appendChild(frag);
-  section.appendChild(grid);
-  document.body.appendChild(section);
+    const frag = document.createDocumentFragment();
+    members.forEach(m => frag.appendChild(makeCard(m)));
+
+    grid.appendChild(frag);
+    section.appendChild(grid);
+    document.body.appendChild(section);
+
+  } catch (err) {
+    console.error("Section load error:", err);
+  }
 }
 
 function makeCard(m) {
   const card = document.createElement("div");
   card.className = "card";
 
+  function makeTags(text) {
+    if (!text) return "";
+    return `
+      <div class="tags">
+        ${text.split(",").map(t => 
+          `<span class="tag">${t.trim()}</span>`
+        ).join("")}
+      </div>
+    `;
+  }
+
   card.innerHTML = `
     <img class="photo"
          src="${m.photo || 'default-profile.png'}"
          alt="${m["Full Name"] || "Profile photo"}"
-         loading="lazy">
+         loading="lazy"
+         decoding="async">
 
     <h3>${m["Full Name"] || ""}</h3>
     <p class="role">${m["Role"] || ""}</p>
 
-    ${m["Research Interests"] ? `<p><strong>Research:</strong> ${m["Research Interests"]}</p>` : ""}
-    ${m["Hobbies"] ? `<p><strong>Hobbies:</strong> ${m["Hobbies"]}</p>` : ""}
-    ${m["Personal Website"] ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` : ""}
+    ${m["Primary Research Interests"] 
+        ? `<div class="label">Research Areas</div>
+           ${makeTags(m["Primary Research Interests"])}` 
+        : ""}
+
+    ${m["Technical Focus"] 
+        ? `<div class="label">Technical Focus</div>
+           ${makeTags(m["Technical Focus"])}` 
+        : ""}
+
+    ${m["Personal Website"] 
+        ? `<a href="${m["Personal Website"]}" target="_blank">Website</a>` 
+        : ""}
   `;
 
   return card;
@@ -125,6 +178,7 @@ function makeCard(m) {
   await loadSection("data/undergraduate.json", "Undergraduate Students");
   await loadSection("data/alumni.json", "Alumni");
 })();
+
 </script>
 
 </body>
